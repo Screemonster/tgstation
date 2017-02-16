@@ -52,6 +52,7 @@
 	icon = 'icons/obj/items.dmi'
 	icon_state = "blueprints"
 	fluffnotice = "Property of Nanotrasen. For heads of staff only. Store in high-secure storage."
+	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | ACID_PROOF
 	var/list/image/showing = list()
 	var/client/viewing
 	var/legend = FALSE	//Viewing the wire legend
@@ -227,9 +228,15 @@
 		A.contents += turfs
 		A.SetDynamicLighting()
 	A.has_gravity = old_gravity
+
+	for(var/area/RA in old.related)
+		if(RA.firedoors)
+			for(var/D in RA.firedoors)
+				var/obj/machinery/door/firedoor/FD = D
+				FD.CalculateAffectingAreas()
+
 	creator << "<span class='notice'>You have created a new area, named [str]. It is now weather proof, and constructing an APC will allow it to be powered.</span>"
 	return 1
-
 
 /obj/item/areaeditor/proc/edit_area()
 	var/area/A = get_area()
@@ -243,6 +250,10 @@
 	set_area_machinery_title(A,str,prevname)
 	for(var/area/RA in A.related)
 		RA.name = str
+		if(RA.firedoors)
+			for(var/D in RA.firedoors)
+				var/obj/machinery/door/firedoor/FD = D
+				FD.CalculateAffectingAreas()
 	usr << "<span class='notice'>You rename the '[prevname]' to '[str]'.</span>"
 	interact()
 	return 1
@@ -276,7 +287,7 @@
 
 /turf/open/check_tile_is_border()
 	for(var/atom/movable/AM in src)
-		if(!AM.CanAtmosPass(src))
+		if(!CANATMOSPASS(AM, src))
 			return BORDER_2NDTILE
 
 	return BORDER_NONE

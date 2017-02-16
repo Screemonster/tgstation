@@ -114,11 +114,11 @@
 
 /obj/item/weapon/tank/suicide_act(mob/user)
 	var/mob/living/carbon/human/H = user
-	user.visible_message("<span class='suicide'>[user] is putting the [src]'s valve to their lips! I don't think they're gonna stop!</span>")
+	user.visible_message("<span class='suicide'>[user] is putting [src]'s valve to [user.p_their()] lips! It looks like [user.p_theyre()] trying to commit suicide!</span>")
 	playsound(loc, 'sound/effects/spray.ogg', 10, 1, -3)
-	if (H && !qdeleted(H))
+	if (H && !QDELETED(H))
 		for(var/obj/item/W in H)
-			H.unEquip(W)
+			H.dropItemToGround(W)
 			if(prob(50))
 				step(W, pick(alldirs))
 		H.hair_style = "Bald"

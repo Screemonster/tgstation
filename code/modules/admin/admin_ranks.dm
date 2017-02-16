@@ -6,6 +6,9 @@ var/list/admin_ranks = list()								//list of all admin_rank datums
 	var/list/adds
 	var/list/subs
 
+/datum/admin_rank/SDQL_update()
+	return FALSE	//Nice try trivialadmin!
+
 /datum/admin_rank/New(init_name, init_rights, list/init_adds, list/init_subs)
 	name = init_name
 	switch(name)
@@ -22,6 +25,9 @@ var/list/admin_ranks = list()								//list of all admin_rank datums
 		init_subs = list()
 	adds = init_adds
 	subs = init_subs
+
+/datum/admin_rank/vv_edit_var(var_name, var_value)
+	return FALSE
 
 /proc/admin_keyword_to_flag(word, previous_rights=0)
 	var/flag = 0
@@ -123,7 +129,7 @@ var/list/admin_ranks = list()								//list of all admin_rank datums
 	else
 		establish_db_connection()
 		if(!dbcon.IsConnected())
-			world.log << "Failed to connect to database in load_admin_ranks(). Reverting to legacy system."
+			log_world("Failed to connect to database in load_admin_ranks(). Reverting to legacy system.")
 			diary << "Failed to connect to database in load_admin_ranks(). Reverting to legacy system."
 			config.admin_legacy_system = 1
 			load_admin_ranks()
@@ -198,7 +204,7 @@ var/list/admin_ranks = list()								//list of all admin_rank datums
 	else
 		establish_db_connection()
 		if(!dbcon.IsConnected())
-			world.log << "Failed to connect to database in load_admins(). Reverting to legacy system."
+			log_world("Failed to connect to database in load_admins(). Reverting to legacy system.")
 			diary << "Failed to connect to database in load_admins(). Reverting to legacy system."
 			config.admin_legacy_system = 1
 			load_admins()
